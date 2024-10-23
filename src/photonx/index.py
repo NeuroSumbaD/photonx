@@ -55,21 +55,24 @@ def eff_index_1D(wavelength, slabThickness, n1, n2, n3, numPoints = 1000):
     tm0 = TM_eq(beta0, k0, n1, n2, n3, slabThickness)[0]
 
     # find TE modes
-    intervals = (te0 >= 0) - (te0 < 0)
-    zeroIndices = np.where(np.diff(intervals) < 0)
-    searchPoints = np.array([beta0[intervals], beta0[intervals+1]])
+    intervals = (te0 >= 0).astype("int") - (te0 < 0).astype("int")
+    zeroIndices = np.where(np.diff(intervals) < 0)[0]
+    searchPoints = np.array([beta0[zeroIndices], beta0[zeroIndices+1]])
     numZeroes = len(searchPoints)
+
     te = []
     for index in range(numZeroes):
-        te.append(root_scalar(lambda x: TE_eq(x, k0, n1, n2, n3)[0], bracket=zeroIndices[index,:])/k0)
+        bracket = (searchPoints[0, index], searchPoints[1, index])
+        te.append(root_scalar(lambda x: TE_eq(x, k0, n1, n2, n3, slabThickness)[0], bracket=bracket).root/k0)
 
     # find TM modes
-    intervals = (tm0 >= 0) - (tm0 < 0)
-    zeroIndices = np.where(np.diff(intervals) < 0)
-    searchPoints = np.array([beta0[intervals], beta0[intervals+1]])
+    intervals = (te0 >= 0).astype("int") - (te0 < 0).astype("int")
+    zeroIndices = np.where(np.diff(intervals) < 0)[0]
+    searchPoints = np.array([beta0[zeroIndices], beta0[zeroIndices+1]])
     numZeroes = len(searchPoints)
     tm = []
     for index in range(numZeroes):
-        tm.append(root_scalar(lambda x: TE_eq(x, k0, n1, n2, n3)[0], bracket=zeroIndices[index,:])/k0)
+        bracket = (searchPoints[0, index], searchPoints[1, index])
+        tm.append(root_scalar(lambda x: TE_eq(x, k0, n1, n2, n3, slabThickness)[0], bracket=bracket).root/k0)
 
-    return (te[::-1], tm[::-1])
+    return (te, tm)
