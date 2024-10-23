@@ -51,8 +51,8 @@ def eff_index_1D(wavelength, slabThickness, n1, n2, n3, numPoints = 1000):
     beta0  = beta0[:-1] # k0 * max(n1,n3) < beta < k0*n2
 
     # need to search the zeros of these two functions
-    te0, _ = TE_eq(beta0, k0, n1, n2, n3, slabThickness)
-    tm0, _ = TM_eq(beta0, k0, n1, n2, n3, slabThickness)
+    te0 = TE_eq(beta0, k0, n1, n2, n3, slabThickness)[0]
+    tm0 = TM_eq(beta0, k0, n1, n2, n3, slabThickness)[0]
 
     # find TE modes
     intervals = (te0 >= 0) - (te0 < 0)
