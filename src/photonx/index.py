@@ -47,7 +47,7 @@ def eff_index_1D(wavelength, slabThickness, n1, n2, n3, numPoints = 1000):
          - tm: list of supported TM modes
     '''
     k0 = 2 * np.pi / wavelength
-    beta0 = np.linspace(np.max(n1, n3) * k0, n2 * k0, 1000) 
+    beta0 = np.linspace(np.max([n1, n3]) * k0, n2 * k0, 1000) 
     beta0  = beta0[:-1] # k0 * max(n1,n3) < beta < k0*n2
 
     # need to search the zeros of these two functions
